@@ -1,6 +1,7 @@
 # coding=utf-8
 import random
 from itertools import chain
+from itertools import cycle
 from typing import Iterable
 from typing import List
 
@@ -43,8 +44,11 @@ class IterableTextLineDataset(IterableDataset):
                                  i % self.num_replicas == self.rank]
 
     def __iter__(self) -> Iterable:
-        corpus_iterator = chain.from_iterable(
-            map(self.lines, self.corpus_files))
+        if self.infinite:
+            streams = cycle(self.corpus_files)
+        else:
+            streams = self.corpus_files
+        corpus_iterator = chain.from_iterable(map(self.lines, streams))
         return corpus_iterator
 
     def process_line(self, line: str):
@@ -62,7 +66,7 @@ class IterableTextLineDataset(IterableDataset):
                 yield self.process_line(line)
 
 
-class StringToIds:
+class StringToTensor:
     def __init__(self,
                  tokenizer: BaseTokenizer,
                  max_seq_len: int):
