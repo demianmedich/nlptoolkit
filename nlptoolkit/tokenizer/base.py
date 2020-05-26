@@ -31,6 +31,9 @@ class BaseTokenizer:
     def ids_to_tokens(self, ids: List[int]) -> List[str]:
         raise NotImplementedError()
 
+    def is_start_token(self, token):
+        raise NotImplementedError()
+
 
 def load_vocab(vocab_path: str) -> Mapping[str, int]:
     with open(vocab_path, mode="rt", encoding="utf-8") as f:

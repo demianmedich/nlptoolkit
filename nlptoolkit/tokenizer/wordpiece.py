@@ -35,6 +35,9 @@ class BertWordPieceTokenizer(BaseTokenizer):
     def ids_to_tokens(self, ids: List[int]) -> List[str]:
         return convert_by_vocab(self._inv_vocab, ids)
 
+    def is_start_token(self, token: str):
+        return not token.startswith("##")
+
 
 def convert_by_vocab(vocab: Mapping, keys: List):
     return [vocab[key] for key in keys]
